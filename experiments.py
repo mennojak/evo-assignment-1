@@ -1,3 +1,7 @@
+from ga_engine import execute_ga_epoch
+from models.ga import Ga
+
+
 def run_counting_ones(tracing):
     if tracing:
         print("Running Tracing run (Counting Ones, N=200, UX)...")
@@ -7,22 +11,12 @@ def run_counting_ones(tracing):
 
     return "TODO"
 
-def run_find_min_population(fitness, crossover):
+def run_find_min_population(fitness, population_size=10, generations=1280):
 
-    if fitness == "trap_tight_deceptive":
-        print("Running Deceptive Trap Function (tightly linked) experiment...") 
+    ga = Ga(population_size=population_size, generations=generations)
 
-
-    elif fitness == "trap_tight_nondeceptive":
-        print("Running Non-deceptive Trap Function (tightly linked) experiment...")
-    
-    
-    elif fitness == "trap_loose_deceptive":
-        print("Running Deceptive Trap Function (not linked) experiment...")
-   
-   
-    elif fitness == "trap_loose_nondeceptive":
-        print("Running Non-deceptive Trap Function (not linked) experiment...")
+    while ga:
+        execute_ga_epoch(ga)
 
     return "TODO"
 
