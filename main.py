@@ -1,3 +1,6 @@
+import time
+from experiments import run_counting_ones, run_find_min_population
+
 def main():
     print("Select experiment:")
     print("1 - Counting Ones")
@@ -9,28 +12,35 @@ def main():
 
     choice = input("Enter 1-6: ")
 
+    start_time = time.time()
+
     if choice == "1":
         print("Running Counting Ones experiment...")
-        other_function(fitness="counting_ones", crossover="ux")
+        run_counting_ones(tracing=False)
 
     elif choice == "2":
         print("Running Deceptive Trap Function (tightly linked) experiment...")
-        run_find_min_population(fitness="trap_tight_deceptive", crossover="ux")
+        run_find_min_population(fitness="trap_tight_deceptive")
 
     elif choice == "3":
         print("Running Non-deceptive Trap Function (tightly linked) experiment...")
-        run_find_min_population(fitness="trap_tight_nondeceptive", crossover="ux")
+        run_find_min_population(fitness="trap_tight_nondeceptive")
 
     elif choice == "4":
         print("Running Deceptive Trap Function (not linked) experiment...")
-        run_find_min_population(fitness="trap_loose_deceptive", crossover="ux")
+        run_find_min_population(fitness="trap_loose_deceptive")
 
     elif choice == "5":
         print("Running Non-deceptive Trap Function (not linked) experiment...")
-        run_find_min_population(fitness="trap_loose_nondeceptive", crossover="ux")
+        run_find_min_population(fitness="trap_loose_nondeceptive")
 
     elif choice == "6":
         print("Running Tracing run (Counting Ones, N=200, UX)...")
-        other_function(fitness="counting_ones", crossover="ux", n=200)
+        run_counting_ones(tracing=True)
 
-if __name__ == "__main__":    main()
+    end_time = time.time()
+    print(f"Experiment completed in {end_time - start_time:.2f} seconds.")
+
+
+if __name__ == "__main__":    
+    main()
