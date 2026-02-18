@@ -1,14 +1,36 @@
-from typing import List, Tuple
 import time
 from ga_engine import GaEngine
+import ga_engine
 from models.ga import Ga
 from models.results import Results
 from models.averageResults import Average_results
-
+import matplotlib.pyplot as plt
 
 def run_counting_ones(tracing):
     if tracing:
         print("Running Tracing run (Counting Ones, N=200, UX)...")
+        max_generations = 1000
+        population_size = 200
+        dict_of_fitness_history = {}
+        ga = Ga(population_size=population_size, max_population=population_size)
+        ga_engine = GaEngine(ga)
+        for step in range(max_generations):
+            dict_of_fitness_history[step] = (ga.evaluate_average_fitness() / 40)
+            if ga.reached_optimum():
+                break
+
+            ga_engine.execute_genetic_engine()
+
+        generations = list(dict_of_fitness_history.keys())
+        avg_fitness = list(dict_of_fitness_history.values())
+
+        plt.plot(generations, avg_fitness, marker='o')
+        plt.xlabel("Generation t")
+        plt.ylabel("Average Fitness / 40")
+        plt.title("Counting Ones Convergence (Population N=200, Uniform Crossover)")
+        plt.grid(True)
+        plt.show()
+
 
     else:
         print("Running Counting Ones experiment...")
