@@ -9,24 +9,19 @@ import matplotlib.pyplot as plt
 def run_counting_ones(tracing):
     if tracing:
         print("Running Tracing run (Counting Ones, N=200, UX)...")
-        max_generations = 1000
         population_size = 200
-        dict_of_fitness_history = {}
+        genome_length = 40
         ga = Ga(population_size=population_size, max_population=population_size)
         ga_engine = GaEngine(ga)
-        for step in range(max_generations):
-            dict_of_fitness_history[step] = (ga.evaluate_average_fitness() / 40)
-            if ga.reached_optimum():
-                break
 
-            ga_engine.execute_genetic_engine()
+        ga_engine.execute_genetic_engine()
 
-        generations = list(dict_of_fitness_history.keys())
-        avg_fitness = list(dict_of_fitness_history.values())
+        generations = list(range(len(ga_engine.fitness_history)))
+        avg_fitness = [f  / (genome_length * population_size) for f in ga_engine.fitness_history]
 
         plt.plot(generations, avg_fitness, marker='o')
-        plt.xlabel("Generation t")
-        plt.ylabel("Average Fitness / 40")
+        plt.xlabel("Generation ")
+        plt.ylabel("Average fitness")
         plt.title("Counting Ones Convergence (Population N=200, Uniform Crossover)")
         plt.grid(True)
         plt.show()
@@ -81,7 +76,7 @@ def run_optimal_population_size(population_size, amount_of_runs) -> tuple[list[R
 def create_result(ga_engine: GaEngine, cpu_time: float) -> Results:
     return Results(
         population_size=ga_engine.ga.population_size,
-        generations=ga_engine.current_epoch,
+        generations=ga_engine.current_generation,
         fitness_evaluations=ga_engine.ga.amount_of_fitness_evaluations,
         cpu_time=cpu_time
     )
