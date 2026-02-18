@@ -1,6 +1,4 @@
-from models import ga
 from models.ga import Ga
-from models.population import Population
 
 
 class GaEngine:

@@ -1,5 +1,9 @@
+from typing import List, Tuple
+import time
 from ga_engine import GaEngine
 from models.ga import Ga
+from models.results import Results
+from models.averageResults import Average_results
 
 
 def run_counting_ones(tracing):
@@ -39,3 +43,36 @@ def run_find_min_population(fitness, population_size=10, max_population=1280):
 
     return current_population if has_reached_good_population else None
 
+def run_optimal_population_size(population_size, amount_of_runs) -> tuple[list[Results], Average_results]:
+    Results = []
+    for run in range(amount_of_runs):
+        start_time = time.time()
+
+        ga = Ga(population_size=population_size, max_population=population_size)            
+        ga_engine = GaEngine(ga)
+        ga_engine.execute_genetic_engine()
+
+        end_time = time.time()
+        Results.append(create_result(ga_engine, cpu_time=end_time - start_time))
+    return Results, create_average_results(Results)
+
+def create_result(ga_engine: GaEngine, cpu_time: float) -> Results:
+    return Results(
+        population_size=ga_engine.ga.population_size,
+        generations=ga_engine.current_epoch,
+        fitness_evaluations=ga_engine.ga.amount_of_fitness_evaluations,
+        cpu_time=cpu_time
+    )
+
+def create_average_results(list_of_results: list[Results]) -> Average_results:
+
+    average_generations = sum(r.generations for r in list_of_results) / len(list_of_results)
+    average_fitness_evaluations = sum(r.fitness_evaluations for r in list_of_results) / len(list_of_results)
+    average_cpu_time = sum(r.cpu_time for r in list_of_results) / len(list_of_results)
+
+    return Average_results(
+        population_size=list_of_results[0].population_size if list_of_results else 0,
+        average_generations=average_generations,
+        average_fitness_evaluations=average_fitness_evaluations,
+        average_cpu_time=average_cpu_time
+    )

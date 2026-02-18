@@ -1,5 +1,9 @@
 import time
-from experiments import run_counting_ones, run_find_min_population
+from experiments import run_counting_ones, run_find_min_population, run_optimal_population_size
+from models.results import Results
+from models.averageResults import Average_results
+from pandas import DataFrame
+import pandas as pd
 
 def main():
     print("Select experiment:")
@@ -14,32 +18,76 @@ def main():
 
     start_time = time.time()
 
+    population_size = None
+    name: str = ""
+
     if choice == "1":
         print("Running Counting Ones experiment...")
-        run_counting_ones(tracing=False)
+        population_size = run_counting_ones(tracing=False)
+        name = "Counting Ones"
 
     elif choice == "2":
         print("Running Deceptive Trap Function (tightly linked) experiment...")
-        run_find_min_population(fitness="trap_tight_deceptive")
+        population_size = run_find_min_population(fitness="trap_tight_deceptive")
+        name = "Deceptive Trap Function (tightly linked)"
 
     elif choice == "3":
         print("Running Non-deceptive Trap Function (tightly linked) experiment...")
-        run_find_min_population(fitness="trap_tight_nondeceptive")
+        population_size = run_find_min_population(fitness="trap_tight_nondeceptive")
+        name = "Non-deceptive Trap Function (tightly linked)"
 
     elif choice == "4":
         print("Running Deceptive Trap Function (not linked) experiment...")
-        run_find_min_population(fitness="trap_loose_deceptive")
+        population_size = run_find_min_population(fitness="trap_loose_deceptive")
+        name = "Deceptive Trap Function (not linked)"
 
     elif choice == "5":
         print("Running Non-deceptive Trap Function (not linked) experiment...")
-        run_find_min_population(fitness="trap_loose_nondeceptive")
+        population_size = run_find_min_population(fitness="trap_loose_nondeceptive")
+        name = "Non-deceptive Trap Function (not linked)"
 
     elif choice == "6":
         print("Running Tracing run (Counting Ones, N=200, UX)...")
         run_counting_ones(tracing=True)
+        name = "Tracing run (Counting Ones, N=200, UX)"
+
+    if population_size is not None:
+        results, average_results = run_optimal_population_size(population_size=population_size, amount_of_runs=10)
+        average_results.experiment_name = name
+        average_results.has_reached_good_population = True
+        show_results(results,average_results)
+    else:
+        print("global optimum was not reached in any of the runs, so no results to show.")
 
     end_time = time.time()
     print(f"Experiment completed in {end_time - start_time:.2f} seconds.")
+
+def show_results(results: list[Results], average_results: Average_results):
+
+    runs_data = {
+        "Run": list(range(1, len(results) + 1)),
+        "Population size": [r.population_size for r in results],
+        "Generations": [r.generations for r in results],
+        "Fitness evaluations": [r.fitness_evaluations for r in results],
+        "CPU Time (s)": [r.cpu_time for r in results],
+        "Success": "-",
+    }
+
+    df_runs = DataFrame(runs_data)
+
+    average_row = DataFrame({
+        "Run": ["average"],
+        "Population size": [average_results.population_size],
+        "Generations": [average_results.average_generations],
+        "Fitness evaluations": [average_results.average_fitness_evaluations],
+        "CPU Time (s)": [average_results.average_cpu_time],
+        "Success": [average_results.has_reached_good_population],
+    })
+
+    final_df = DataFrame(pd.concat([df_runs, average_row], ignore_index=True))
+
+    print(f"\n===== {average_results.experiment_name} =====")
+    print(final_df.to_string(index=False))
 
 
 if __name__ == "__main__":    

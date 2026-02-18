@@ -9,6 +9,7 @@ class Ga():
         self.population =  Population(population_size)
         self.crossover_strat : str = "UX"
         self.fitness_strat : str = "counting_ones"
+        self.amount_of_fitness_evaluations = 0
 
     def reached_optimum(self):
         if self.fitness_strat == "counting_ones":
@@ -63,6 +64,9 @@ class Ga():
                 key=lambda x: (x[0].fitness(), 1 if x[1] == "child" else 0),
                 reverse=True
             )
+            self.amount_of_fitness_evaluations += 2
+
+            
 
             # print("\nSorted (best first, child wins ties):")
             # for ind, role in sorted_family:
