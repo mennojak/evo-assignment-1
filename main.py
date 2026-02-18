@@ -78,11 +78,21 @@ def show_results(results: list[Results], average_results: Average_results):
     average_row = DataFrame({
         "Run": ["average"],
         "Population size": [average_results.population_size],
-        "Generations": [average_results.average_generations],
-        "Fitness evaluations": [average_results.average_fitness_evaluations],
-        "CPU Time (s)": [average_results.average_cpu_time],
+        "Generations": [
+            f"{average_results.average_generations:.2f} "
+            f"(σ = {average_results.deviations_generations:.2f})"
+        ],
+        "Fitness evaluations": [
+            f"{average_results.average_fitness_evaluations:.2f} "
+            f"(σ = {average_results.deviations_fitness_evaluations:.2f})"
+        ],
+        "CPU Time (s)": [
+            f"{average_results.average_cpu_time:.4f} "
+            f"(σ = {average_results.deviations_cpu_time:.4f})"
+        ],
         "Success": [average_results.has_reached_good_population],
     })
+
 
     final_df = DataFrame(pd.concat([df_runs, average_row], ignore_index=True))
 

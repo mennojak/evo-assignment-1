@@ -70,9 +70,28 @@ def create_average_results(list_of_results: list[Results]) -> Average_results:
     average_fitness_evaluations = sum(r.fitness_evaluations for r in list_of_results) / len(list_of_results)
     average_cpu_time = sum(r.cpu_time for r in list_of_results) / len(list_of_results)
 
+    deviation_generations = calculate_standard_deviation(list_of_results, average_generations, lambda r: r.generations)
+    deviation_fitness_evaluations = calculate_standard_deviation(list_of_results, average_fitness_evaluations, lambda r: r.fitness_evaluations)
+    deviation_cpu_time = calculate_standard_deviation(list_of_results, average_cpu_time, lambda r: r.cpu_time)
+
     return Average_results(
         population_size=list_of_results[0].population_size if list_of_results else 0,
         average_generations=average_generations,
         average_fitness_evaluations=average_fitness_evaluations,
-        average_cpu_time=average_cpu_time
+        average_cpu_time=average_cpu_time,
+        deviations_generations=deviation_generations,
+        deviations_fitness_evaluations=deviation_fitness_evaluations,
+        deviations_cpu_time=deviation_cpu_time
     )
+
+def calculate_standard_deviation(list_of_results: list[Results], mean_value: float, key_func) -> float:
+
+    total_distance = 0
+
+    for r in list_of_results:
+        value = key_func(r)
+        distance = (value - mean_value) ** 2
+        total_distance += distance
+
+    mean_distance = total_distance / len(list_of_results)
+    return mean_distance ** 0.5
