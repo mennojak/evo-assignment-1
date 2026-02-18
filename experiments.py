@@ -17,14 +17,30 @@ def run_counting_ones(tracing):
         ga_engine.execute_genetic_engine()
 
         generations = list(range(len(ga_engine.fitness_history)))
-        avg_fitness = [f  / (genome_length * population_size) for f in ga_engine.fitness_history]
+        avg_fitnesses = [f  / (genome_length * population_size) for f in ga_engine.fitness_history]
 
-        plt.plot(generations, avg_fitness, marker='o')
-        plt.xlabel("Generation ")
+        plt.plot(generations, avg_fitnesses, marker='o')
+        plt.xlabel("Generation")
         plt.ylabel("Average fitness")
         plt.title("Counting Ones Convergence (Population N=200, Uniform Crossover)")
         plt.grid(True)
         plt.show()
+
+        success_counts = [r[0] for r in ga_engine.history_of_succesrate_competitions]
+        error_counts = [r[1] for r in ga_engine.history_of_succesrate_competitions]
+
+        plt.plot(generations, success_counts, marker='o', label="Error Amount")
+        plt.plot(generations, error_counts, marker='x', label="Correct Amount")
+
+        plt.xlabel("Generation")
+        plt.ylabel("Count")
+        plt.title("Selection Decisions per Generation")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+
+        
 
 
     else:

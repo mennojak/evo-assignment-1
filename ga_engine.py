@@ -1,19 +1,29 @@
 from models.ga import Ga
 
-
 class GaEngine:
     def __init__(self, ga : Ga):
         self.ga = ga
-        self.max_generations = 1200000
+        self.max_generations = 1200
         self.current_generation = 0
         self.fitness_history = []
+        self.history_of_succesrate_competitions = []
 
     # Genetic algorithm. 
     def execute_genetic_engine(self):
         while not self.should_ga_stop():
             self.current_generation += 1
             self.execute_generation()
-            self.fitness_history.append(self.ga.evaluate_total_fitness())
+
+            self.fitness_history.append(
+                self.ga.evaluate_total_fitness()
+            )
+
+            self.history_of_succesrate_competitions.append(
+                (self.ga.successAmount_competition, self.ga.errorAmount_competition)
+            )
+
+            self.ga.successAmount_competition = 0
+            self.ga.errorAmount_competition = 0
 
     def should_ga_stop(self) -> bool:
         return self.check_for_big_differences() or self.current_generation >= self.max_generations or self.ga.reached_optimum()

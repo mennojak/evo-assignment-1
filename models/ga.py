@@ -1,3 +1,4 @@
+from enum import Enum
 from models.individual import Individual
 from models.population import Population
 from operators import crossover
@@ -10,6 +11,8 @@ class Ga():
         self.crossover_strat : str = "UX"
         self.fitness_strat : str = "counting_ones"
         self.amount_of_fitness_evaluations = 0
+        self.successAmount_competition = 0
+        self.errorAmount_competition = 0
 
     def reached_optimum(self):
         if self.fitness_strat == "counting_ones":
@@ -66,7 +69,7 @@ class Ga():
             )
             self.amount_of_fitness_evaluations += 2
 
-            
+            self.evaluate_decisions(family)
 
             # print("\nSorted (best first, child wins ties):")
             # for ind, role in sorted_family:
@@ -82,7 +85,6 @@ class Ga():
             new_pop.add_new_individuals([ind for ind, _ in winners])
 
         self.population = new_pop
-
         
     # Returns 2 chidren, which are the result of crossing their genes.    
     def produce_offspring(self, parent_a : Individual, parent_b : Individual) -> tuple[Individual, Individual]:
@@ -90,6 +92,23 @@ class Ga():
     
     def get_child(self, parent_a : Individual, parent_b : Individual) -> Individual:
         return crossover(parent_a, parent_b, self.crossover_strat)
+    
+    def evaluate_decisions(self, family:  list[tuple[Individual, str]]):
+        parent1 = family[0][0]
+        parent2 = family[1][0]
+        child1 = family[2][0]
+        child2 = family[3][0]
+
+        list_of_results = []
+
+        for index in  range(len(parent1.genome)):
+            if parent1.genome[index] != parent2.genome[index]:
+                if child1.genome[index] == '0' and child2.genome[index] == '0':
+                    self.successAmount_competition += 1
+                elif child1.genome[index] == '1' and child2.genome[index] == '1':
+                    self.errorAmount_competition += 1
+
+        
 
 
         
