@@ -1,6 +1,5 @@
 import time
 from ga_engine import GaEngine
-import ga_engine
 from models.ga import Ga
 from models.results import Results
 from models.averageResults import Average_results
@@ -103,9 +102,9 @@ def create_average_results(list_of_results: list[Results]) -> Average_results:
     average_fitness_evaluations = sum(r.fitness_evaluations for r in list_of_results) / len(list_of_results)
     average_cpu_time = sum(r.cpu_time for r in list_of_results) / len(list_of_results)
 
-    deviation_generations = calculate_standard_deviation(list_of_results, average_generations, lambda r: r.generations)
-    deviation_fitness_evaluations = calculate_standard_deviation(list_of_results, average_fitness_evaluations, lambda r: r.fitness_evaluations)
-    deviation_cpu_time = calculate_standard_deviation(list_of_results, average_cpu_time, lambda r: r.cpu_time)
+    deviation_generations = calculate_standard_deviation_of_results(list_of_results, average_generations, lambda r: r.generations)
+    deviation_fitness_evaluations = calculate_standard_deviation_of_results(list_of_results, average_fitness_evaluations, lambda r: r.fitness_evaluations)
+    deviation_cpu_time = calculate_standard_deviation_of_results(list_of_results, average_cpu_time, lambda r: r.cpu_time)
 
     return Average_results(
         population_size=list_of_results[0].population_size if list_of_results else 0,
@@ -117,7 +116,7 @@ def create_average_results(list_of_results: list[Results]) -> Average_results:
         deviations_cpu_time=deviation_cpu_time
     )
 
-def calculate_standard_deviation(list_of_results: list[Results], mean_value: float, key_func) -> float:
+def calculate_standard_deviation_of_results(list_of_results: list[Results], mean_value: float, key_func) -> float:
 
     total_distance = 0
 

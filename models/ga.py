@@ -1,4 +1,3 @@
-from enum import Enum
 from models.individual import Individual
 from models.population import Population
 from operators import crossover
@@ -99,14 +98,12 @@ class Ga():
         child1 = family[2][0]
         child2 = family[3][0]
 
-        list_of_results = []
-
         for index in  range(len(parent1.genome)):
             if parent1.genome[index] != parent2.genome[index]:
                 if child1.genome[index] == '0' and child2.genome[index] == '0':
-                    self.successAmount_competition += 1
-                elif child1.genome[index] == '1' and child2.genome[index] == '1':
                     self.errorAmount_competition += 1
+                elif child1.genome[index] == '1' and child2.genome[index] == '1':
+                    self.successAmount_competition += 1
 
         
 
