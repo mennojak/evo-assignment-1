@@ -62,11 +62,11 @@ class GaEngine:
         for individual in self.ga.population.individuals:
             if individual.genome[0] == schema_one[0]:
                 schema_result_one.amount = schema_result_one.amount + 1
-                schema_total_fitness_one += individual.fitness()
+                schema_total_fitness_one += individual.fitness(self.ga.fitness_strat)
                 population_one.append(individual)
             elif individual.genome[0] == schema_zero[0]:
                 schema_result_zero.amount = schema_result_zero.amount + 1
-                schema_total_fitness_zero += individual.fitness()
+                schema_total_fitness_zero += individual.fitness(self.ga.fitness_strat)
                 population_zero.append(individual)
 
         schema_result_one.schema_fitness = schema_total_fitness_one / schema_result_one.amount if schema_result_one.amount > 0 else 0
@@ -84,7 +84,7 @@ class GaEngine:
         total_distance = 0
 
         for individual in schema_population:
-            value = individual.fitness()
+            value = individual.fitness(self.ga.fitness_strat)
             distance = (value - schema_result.schema_fitness) ** 2
             total_distance += distance
 

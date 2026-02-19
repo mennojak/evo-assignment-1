@@ -41,14 +41,14 @@ def two_point_crossover(parent_a, parent_b):
         genome_a[p2:]
     )
 
-    print(f"TPX crossover between points {p1} and {p2}. Child fitness: {child_genome.count('1')}")
-    return child_genome
+    print(f"2X crossover between points {p1} and {p2}. Child fitness: {child_genome.count('1')}")
+    return Individual(child_genome)
 
 
 def crossover(parent_a : Individual, parent_b : Individual, strategy) -> Individual:
     if strategy == "UX":
         return uniform_crossover(parent_a, parent_b)
-    elif strategy == "TPX":
+    elif strategy == "2X":
         return two_point_crossover(parent_a, parent_b)
     else:
         raise ValueError(f"Unknown crossover strategy {strategy}")

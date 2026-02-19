@@ -1,3 +1,4 @@
+from secrets import choice
 import time
 from experiments import run_counting_ones, run_find_min_population, run_optimal_population_size
 from models.results import Results
@@ -10,11 +11,17 @@ def main():
     print("1 - Counting Ones")
     print("2 - Deceptive Trap Function (tightly linked)")
     print("3 - Non-deceptive Trap Function (tightly linked)")
-    print("4 - Deceptive Trap Function (not linked)")
-    print("5 - Non-deceptive Trap Function (not linked)")
+    print("4 - Deceptive Trap Function (loosely linked)")
+    print("5 - Non-deceptive Trap Function (loosely linked)")
     print("6 - Tracing run (Counting Ones, N=200, UX)")
 
     choice = input("Enter 1-6: ")
+
+    if choice != "6":
+        print("\nSelect crossover strategy:")
+        print("1 - Uniform Crossover (UX)")
+        print("2 - Two-Point Crossover (2X)")
+        operator_choice = input("Enter the number of the crossover strategy you want to use: ")
 
     start_time = time.time()
 
@@ -23,32 +30,32 @@ def main():
 
     if choice == "1":
         print("Running Counting Ones experiment...")
-        population_size = run_counting_ones(tracing=False)
-        name = "Counting Ones"
+        population_size = run_counting_ones(tracing=False, fitness_strat="counting_ones", crossover_strat="UX" if operator_choice == "1" else "2X")
+        name = "Counting Ones - " + ("UX" if operator_choice == "1" else "2X")
 
     elif choice == "2":
         print("Running Deceptive Trap Function (tightly linked) experiment...")
-        population_size = run_find_min_population(fitness="trap_tight_deceptive")
-        name = "Deceptive Trap Function (tightly linked)"
+        population_size = run_find_min_population(fitness_strat="trap_tight_deceptive", crossover_strat="UX" if operator_choice == "1" else "2X")
+        name = f"Deceptive Trap Function (tightly linked) - {('UX' if operator_choice == '1' else '2X')}"
 
     elif choice == "3":
         print("Running Non-deceptive Trap Function (tightly linked) experiment...")
-        population_size = run_find_min_population(fitness="trap_tight_nondeceptive")
-        name = "Non-deceptive Trap Function (tightly linked)"
+        population_size = run_find_min_population(fitness_strat="trap_tight_nondeceptive", crossover_strat="UX" if operator_choice == "1" else "2X")
+        name = f"Non-deceptive Trap Function (tightly linked) - {('UX' if operator_choice == '1' else '2X')}    "
 
     elif choice == "4":
         print("Running Deceptive Trap Function (not linked) experiment...")
-        population_size = run_find_min_population(fitness="trap_loose_deceptive")
-        name = "Deceptive Trap Function (not linked)"
+        population_size = run_find_min_population(fitness_strat="trap_loose_deceptive", crossover_strat="UX" if operator_choice == "1" else "2X")
+        name = f"Deceptive Trap Function (not linked) - {('UX' if operator_choice == '1' else '2X')}"
 
     elif choice == "5":
         print("Running Non-deceptive Trap Function (not linked) experiment...")
-        population_size = run_find_min_population(fitness="trap_loose_nondeceptive")
-        name = "Non-deceptive Trap Function (not linked)"
+        population_size = run_find_min_population(fitness_strat="trap_loose_nondeceptive", crossover_strat="UX" if operator_choice == "1" else "2X")
+        name = f"Non-deceptive Trap Function (not linked) - {('UX' if operator_choice == '1' else '2X')}"
 
     elif choice == "6":
         print("Running Tracing run (Counting Ones, N=200, UX)...")
-        run_counting_ones(tracing=True)
+        run_counting_ones(tracing=True, fitness_strat="counting_ones", crossover_strat="UX")
         name = "Tracing run (Counting Ones, N=200, UX)"
 
     if population_size is not None:

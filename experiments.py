@@ -5,12 +5,12 @@ from models.results import Results
 from models.averageResults import Average_results
 import matplotlib.pyplot as plt
 
-def run_counting_ones(tracing):
+def run_counting_ones(tracing, fitness_strat, crossover_strat) -> int:
     if tracing:
         print("Running Tracing run (Counting Ones, N=200, UX)...")
         population_size = 200
         genome_length = 40
-        ga = Ga(population_size=population_size, max_population=population_size)
+        ga = Ga(population_size=population_size, max_population=population_size, fitness_strat="counting_ones", crossover_strat="UX")
         ga_engine = GaEngine(ga)
 
         ga_engine.execute_genetic_engine()
@@ -38,17 +38,15 @@ def run_counting_ones(tracing):
         plt.grid(True)
         plt.show()
 
-
-        
-
-
     else:
         print("Running Counting Ones experiment...")
+        # TODO implement this
+        ga = Ga(population_size=population_size, max_population=population_size, fitness_strat=fitness_strat, crossover_strat=crossover_strat)
 
     return "TODO"
 
 # Goal to find the min pop needed.
-def run_find_min_population(fitness, population_size=10, max_population=1280):
+def run_find_min_population(population_size=10, max_population=1280, fitness_strat = str, crossover_strat = str) -> int:
     has_reached_good_population = False
     current_population = population_size
 
@@ -56,7 +54,7 @@ def run_find_min_population(fitness, population_size=10, max_population=1280):
     while not has_reached_good_population and current_population <= max_population:
         amount_good_fitness = 0
         for step in range(10):
-            ga = Ga(population_size=current_population, max_population=max_population)
+            ga = Ga(population_size=current_population, max_population=max_population, fitness_strat=fitness_strat, crossover_strat=crossover_strat)
             ga_engine = GaEngine(ga)
             ga_engine.execute_genetic_engine()
             print(f"{step} ---- Just did a GA: {current_population}, reached optimum: {ga.reached_optimum()}. Average Fitness: {ga.evaluate_average_fitness()}")
@@ -67,6 +65,7 @@ def run_find_min_population(fitness, population_size=10, max_population=1280):
             has_reached_good_population = True
         else:
             current_population *= 2
+            # TODO can't over the max_population
 
     if has_reached_good_population:
         print(f"Found good fitness with population size {current_population}")
@@ -75,12 +74,12 @@ def run_find_min_population(fitness, population_size=10, max_population=1280):
 
     return current_population if has_reached_good_population else None
 
-def run_optimal_population_size(population_size, amount_of_runs) -> tuple[list[Results], Average_results]:
+def run_optimal_population_size(population_size, amount_of_runs, fitness_strat, crossover_strat) -> tuple[list[Results], Average_results]:
     Results = []
     for run in range(amount_of_runs):
         start_time = time.time()
 
-        ga = Ga(population_size=population_size, max_population=population_size)            
+        ga = Ga(population_size=population_size, max_population=population_size, fitness_strat=fitness_strat, crossover_strat=crossover_strat)            
         ga_engine = GaEngine(ga)
         ga_engine.execute_genetic_engine()
 

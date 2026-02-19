@@ -3,33 +3,27 @@ from models.population import Population
 from operators import crossover
 
 class Ga():
-    def __init__(self, population_size, max_population):
+    def __init__(self, population_size, max_population, fitness_strat, crossover_strat):
         self.population_size = population_size
         self.max_population = max_population
         self.population =  Population(population_size)
-        self.crossover_strat : str = "UX"
-        self.fitness_strat : str = "counting_ones"
+        self.crossover_strat = crossover_strat
+        self.fitness_strat = fitness_strat
         self.amount_of_fitness_evaluations = 0
         self.successAmount_competition = 0
         self.errorAmount_competition = 0
+        print(f"Initialized GA with population size {population_size}, fitness strategy {fitness_strat} and crossover strategy {crossover_strat}")
 
     def reached_optimum(self):
-        if self.fitness_strat == "counting_ones":
-            for individual in self.population.individuals:
-                if individual.fitness() == individual.length:
-                    return True
-            return False
-        elif self.fitness_strat == "trap_deceptive" or self.fitness_strat == "trap_non_deceptive":
-
-            # TODO Implement other fitness strategies here
-            pass
+        for individual in self.population.individuals:
+            if individual.fitness(self.fitness_strat) == individual.length:
+                return True
         return False
-    
+
     def evaluate_total_fitness(self) -> int:
         total_fitness = 0
         for individual in self.population.individuals:
-            total_fitness += individual.fitness()
-
+            total_fitness += individual.fitness(self.fitness_strat)
         return total_fitness
 
     def evaluate_average_fitness(self) -> int:
@@ -39,6 +33,7 @@ class Ga():
     def family_competition(self):
         shuffled_individuals = self.population.get_shuffled_individuals()
         new_pop = Population(0)
+        fitness_strategy = self.fitness_strat
 
         for i in range(0, len(shuffled_individuals), 2):
             parent_a : Individual = shuffled_individuals[i]
@@ -63,7 +58,7 @@ class Ga():
             # 2. If equal fitness → child before parent
             sorted_family = sorted(
                 family,
-                key=lambda x: (x[0].fitness(), 1 if x[1] == "child" else 0),
+                key=lambda x: (x[0].fitness(fitness_strategy), 1 if x[1] == "child" else 0),
                 reverse=True
             )
             self.amount_of_fitness_evaluations += 2
