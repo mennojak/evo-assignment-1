@@ -59,7 +59,14 @@ def main():
         name = "Tracing run (Counting Ones, N=200, UX)"
 
     if population_size is not None:
-        results, average_results = run_optimal_population_size(population_size=population_size, amount_of_runs=10)
+        results, average_results = run_optimal_population_size(
+            population_size=population_size, amount_of_runs=10,
+            fitness_strat = "counting_ones"
+            if choice == "2" else "trap_tight_deceptive" 
+            if choice == "3" else "trap_tight_nondeceptive" 
+            if choice == "4" else "trap_loose_deceptive" 
+            if choice == "5" else "trap_loose_nondeceptive" ,
+            crossover_strat="UX" if operator_choice == "1" else "2X")
         average_results.experiment_name = name
         average_results.has_reached_good_population = True
         show_results(results,average_results)

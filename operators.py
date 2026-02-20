@@ -40,7 +40,6 @@ def two_point_crossover(parent_a, parent_b):
         genome_a[p2:]
     )
 
-    print(f"2X crossover between points {p1} and {p2}. Child fitness: {child_genome.count('1')}")
     return Individual(child_genome)
 
 # crossover strategy selector, based on the selected type of crossover.

@@ -46,7 +46,6 @@ class GaEngine:
 
     # one step of the algorithm
     def execute_generation(self):
-        print(f"Average fitness: {self.ga.evaluate_average_fitness()}")
         self.ga.family_competition()
 
     # evaluate the schema of the first value of the genome, to see how it evolves over time.

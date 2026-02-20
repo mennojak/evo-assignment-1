@@ -64,14 +64,9 @@ def run_counting_ones(tracing, fitness_strat, crossover_strat) -> int:
         plt.grid(True)
         plt.show()
 
-
-
+        return None
     else:
-        print("Running Counting Ones experiment...")
-        # TODO implement this
-        ga = Ga(population_size=population_size, max_population=population_size, fitness_strat=fitness_strat, crossover_strat=crossover_strat)
-
-    return "TODO"
+        return run_find_min_population(fitness_strat=fitness_strat, crossover_strat=crossover_strat)
 
 # Goal to find the min pop needed.
 def run_find_min_population(population_size=10, max_population=1280, fitness_strat = str, crossover_strat = str) -> int:
