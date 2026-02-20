@@ -80,8 +80,6 @@ class GaEngine:
 
         self.schema_dictionary_history.append((schema_result_zero,schema_result_one))
 
-        print(f"Schema {schema_result_one.schema} has amount {schema_result_one.amount}, average fitness {schema_result_one.schema_fitness:.2f} and deviation {schema_result_one.schema_fitness_deviation:.2f}")
-
     # calculate the standard deviation of a schema result, based on the fitness of the individuals that match the schema.
     def calculate_standard_deviation_of_SchemaResults(self, schema_result: SchemaResult, schema_population: list) -> float:
 

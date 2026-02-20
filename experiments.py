@@ -33,10 +33,38 @@ def run_counting_ones(tracing, fitness_strat, crossover_strat) -> int:
 
         plt.xlabel("Generation")
         plt.ylabel("Count")
-        plt.title("Selection Decisions per Generation")
+        plt.title("Selection Decisions per Generation (Population N=200, Uniform Crossover)")
         plt.legend()
         plt.grid(True)
         plt.show()
+        
+        schema_zero_amounts = [r[0].amount for r in ga_engine.schema_dictionary_history]
+        schema_one_amounts = [r[1].amount for r in ga_engine.schema_dictionary_history]
+
+        plt.plot(generations, schema_zero_amounts, marker='o', label="Schema 0*")
+        plt.plot(generations, schema_one_amounts, marker='x', label="Schema 1*")
+        plt.xlabel("Generation")
+        plt.ylabel("Amount")
+        plt.title("Schema amount per Generation (Population N=200, Uniform Crossover)")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+        schema_zero_fitnesses = [r[0].schema_fitness for r in ga_engine.schema_dictionary_history]
+        schema_one_fitnesses = [r[1].schema_fitness for r in ga_engine.schema_dictionary_history]
+        schema_zero_fitnesses_deviations = [r[0].schema_fitness_deviation for r in ga_engine.schema_dictionary_history]
+        schema_one_fitnesses_deviations = [r[1].schema_fitness_deviation for r in ga_engine.schema_dictionary_history]
+
+        plt.errorbar(generations, schema_zero_fitnesses, yerr=schema_zero_fitnesses_deviations, marker='o', label="Schema 0*")
+        plt.errorbar(generations, schema_one_fitnesses, yerr=schema_one_fitnesses_deviations, marker='x', label="Schema 1*")
+        plt.xlabel("Generation")
+        plt.ylabel("Average Fitness")
+        plt.title("Schema Average Fitness per Generation (Population N=200, Uniform Crossover)")
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+
 
     else:
         print("Running Counting Ones experiment...")
