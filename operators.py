@@ -2,6 +2,7 @@ import random
 
 from models.individual import Individual
 
+# crossover operators for the genetic algorithm.
 def uniform_crossover(parent_a : Individual, parent_b : Individual) -> Individual:
     genome_a = parent_a.genome
     genome_b = parent_b.genome
@@ -17,10 +18,9 @@ def uniform_crossover(parent_a : Individual, parent_b : Individual) -> Individua
         else:
             child_genome += genome_b[i]
 
-    # print(f"UX crossover done. Child fitness: {child_genome.count('1')}")
     return Individual(child_genome)
 
-
+# two-point crossover operator for the genetic algorithm.
 def two_point_crossover(parent_a, parent_b):
     genome_a = parent_a.genome
     genome_b = parent_b.genome
@@ -34,7 +34,6 @@ def two_point_crossover(parent_a, parent_b):
     p1 = random.randint(0, length - 2)
     p2 = random.randint(p1 + 1, length - 1)
 
-    # Create child genome
     child_genome = (
         genome_a[:p1] +
         genome_b[p1:p2] +
@@ -44,7 +43,7 @@ def two_point_crossover(parent_a, parent_b):
     print(f"2X crossover between points {p1} and {p2}. Child fitness: {child_genome.count('1')}")
     return Individual(child_genome)
 
-
+# crossover strategy selector, based on the selected type of crossover.
 def crossover(parent_a : Individual, parent_b : Individual, strategy) -> Individual:
     if strategy == "UX":
         return uniform_crossover(parent_a, parent_b)

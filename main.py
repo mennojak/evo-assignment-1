@@ -69,6 +69,7 @@ def main():
     end_time = time.time()
     print(f"Experiment completed in {end_time - start_time:.2f} seconds.")
 
+# show results of executed experiment.
 def show_results(results: list[Results], average_results: Average_results):
 
     runs_data = {

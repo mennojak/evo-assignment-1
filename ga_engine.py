@@ -10,7 +10,7 @@ class GaEngine:
         self.schema_dictionary_history = []
         self.history_of_succesrate_competitions = []
 
-    # Genetic algorithm. 
+    # genetic algorithm. 
     def execute_genetic_engine(self):
         while not self.should_ga_stop():
 
@@ -30,11 +30,13 @@ class GaEngine:
             self.ga.successAmount_competition = 0
             self.ga.errorAmount_competition = 0
 
+    # check if the algorithm should stop, based on reaching the optimum, reaching the maximum number of generations 
+    # or stagnating (not having big differences in fitness in the last 20 generations).
     def should_ga_stop(self) -> bool:
         return self.check_for_big_differences() or self.current_generation >= self.max_generations or self.ga.reached_optimum()
 
+    # check if the fitness had big differences in the last 20 generations, if not, we can assume we are stagnating and stop the algorithm.
     def check_for_big_differences(self, threshold=100, check_last_n_generations=20) -> bool:
-        # check if the fitness had big differences in the last 20 generations, if not, we can assume we are stagnating and stop the algorithm.
         if len(self.fitness_history) < check_last_n_generations:
             return False
         recent_history = self.fitness_history[-check_last_n_generations:]
@@ -47,6 +49,7 @@ class GaEngine:
         print(f"Average fitness: {self.ga.evaluate_average_fitness()}")
         self.ga.family_competition()
 
+    # evaluate the schema of the first value of the genome, to see how it evolves over time.
     def evaluate_schema_first_value(self):
         schema_one = "1" + "*" * (self.ga.population.individuals[0].length - 1)
         schema_zero = "0" + "*" * (self.ga.population.individuals[0].length - 1)
@@ -79,6 +82,7 @@ class GaEngine:
 
         print(f"Schema {schema_result_one.schema} has amount {schema_result_one.amount}, average fitness {schema_result_one.schema_fitness:.2f} and deviation {schema_result_one.schema_fitness_deviation:.2f}")
 
+    # calculate the standard deviation of a schema result, based on the fitness of the individuals that match the schema.
     def calculate_standard_deviation_of_SchemaResults(self, schema_result: SchemaResult, schema_population: list) -> float:
 
         total_distance = 0

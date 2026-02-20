@@ -5,9 +5,9 @@ from models.results import Results
 from models.averageResults import Average_results
 import matplotlib.pyplot as plt
 
+# runs the specific experiment to plot, with population of 200, uniform crossover, and counting ones as fitness function.
 def run_counting_ones(tracing, fitness_strat, crossover_strat) -> int:
     if tracing:
-        print("Running Tracing run (Counting Ones, N=200, UX)...")
         population_size = 200
         genome_length = 40
         ga = Ga(population_size=population_size, max_population=population_size, fitness_strat="counting_ones", crossover_strat="UX")
@@ -74,6 +74,7 @@ def run_find_min_population(population_size=10, max_population=1280, fitness_str
 
     return current_population if has_reached_good_population else None
 
+# runs the optimal population size, based on the found population size of function run_find_min_population.
 def run_optimal_population_size(population_size, amount_of_runs, fitness_strat, crossover_strat) -> tuple[list[Results], Average_results]:
     Results = []
     for run in range(amount_of_runs):
@@ -87,6 +88,7 @@ def run_optimal_population_size(population_size, amount_of_runs, fitness_strat, 
         Results.append(create_result(ga_engine, cpu_time=end_time - start_time))
     return Results, create_average_results(Results)
 
+# create result data of one run of the genetic algorithm.
 def create_result(ga_engine: GaEngine, cpu_time: float) -> Results:
     return Results(
         population_size=ga_engine.ga.population_size,
@@ -95,6 +97,7 @@ def create_result(ga_engine: GaEngine, cpu_time: float) -> Results:
         cpu_time=cpu_time
     )
 
+# create average results of multiple runs of the genetic algorithm, with standard deviations.
 def create_average_results(list_of_results: list[Results]) -> Average_results:
 
     average_generations = sum(r.generations for r in list_of_results) / len(list_of_results)
@@ -115,6 +118,8 @@ def create_average_results(list_of_results: list[Results]) -> Average_results:
         deviations_cpu_time=deviation_cpu_time
     )
 
+# calculate standard deviation of a list of results, based on a key function (generations,fitness,cpu_time) 
+# to extract the value to calculate the deviation on.
 def calculate_standard_deviation_of_results(list_of_results: list[Results], mean_value: float, key_func) -> float:
 
     total_distance = 0
