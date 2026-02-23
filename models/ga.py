@@ -6,7 +6,7 @@ class Ga():
     def __init__(self, population_size, max_population, fitness_strat, crossover_strat):
         self.population_size = population_size
         self.max_population = max_population
-        self.population =  Population(population_size)
+        self.population = Population(population_size)
         self.crossover_strat = crossover_strat
         self.fitness_strat = fitness_strat
         self.amount_of_fitness_evaluations = 0
@@ -15,10 +15,19 @@ class Ga():
 
     # check if one of the individuals in the population has reached the optimum fitness.
     def reached_optimum(self):
-        for individual in self.population.individuals:
-            if individual.fitness(self.fitness_strat) == individual.length:
-                return True
-        return False
+        optimal = self.get_optimal_fitness_for_one()
+        return any(
+            ind.fitness(self.fitness_strat) == optimal
+            for ind in self.population.individuals
+        )
+    
+    def get_optimal_fitness_for_one(self) -> float:
+        if self.fitness_strat == "counting_ones":
+            return self.population.individuals[0].length
+
+        sub_length = 4
+        num_sub = self.population.individuals[0].length // sub_length
+        return sub_length * num_sub
 
     # evaluate the total fitness of the population, by summing the fitness of all individuals.
     def evaluate_total_fitness(self) -> int:
@@ -55,9 +64,7 @@ class Ga():
                 (child_b, "child"),
             ]
 
-            # Sort:
-            # 1. Higher fitness first
-            # 2. If equal fitness → child before parent
+            # Sort on higher fitness and if equal, then children first.
             sorted_family = sorted(
                 family,
                 key=lambda x: (

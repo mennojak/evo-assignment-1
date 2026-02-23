@@ -28,8 +28,8 @@ def run_counting_ones(tracing, fitness_strat, crossover_strat) -> int:
         success_counts = [r[0] for r in ga_engine.history_of_succesrate_competitions]
         error_counts = [r[1] for r in ga_engine.history_of_succesrate_competitions]
 
-        plt.plot(generations, success_counts, marker='o', label="Error Amount")
-        plt.plot(generations, error_counts, marker='x', label="Correct Amount")
+        plt.plot(generations, success_counts, marker='o', label="Success Amount")
+        plt.plot(generations, error_counts, marker='x', label="Error Amount")
 
         plt.xlabel("Generation")
         plt.ylabel("Count")
@@ -157,7 +157,7 @@ def is_population_good(pop_size: int, fitness_strat, crossover_strat) -> bool:
 
 # runs the optimal population size, based on the found population size of function run_find_min_population.
 def run_optimal_population_size(population_size, amount_of_runs, fitness_strat, crossover_strat) -> tuple[list[Results], Average_results]:
-    Results = []
+    results = []
     for run in range(amount_of_runs):
         start_time = time.time()
 
@@ -166,8 +166,8 @@ def run_optimal_population_size(population_size, amount_of_runs, fitness_strat, 
         ga_engine.execute_genetic_engine()
 
         end_time = time.time()
-        Results.append(create_result(ga_engine, cpu_time=end_time - start_time))
-    return Results, create_average_results(Results)
+        results.append(create_result(ga_engine, cpu_time=end_time - start_time))
+    return results, create_average_results(results)
 
 # create result data of one run of the genetic algorithm.
 def create_result(ga_engine: GaEngine, cpu_time: float) -> Results:

@@ -1,5 +1,6 @@
 from models.SchemaResult import SchemaResult
 from models.ga import Ga
+from models.individual import Individual
 
 class GaEngine:
     def __init__(self, ga : Ga):
@@ -80,7 +81,7 @@ class GaEngine:
         self.schema_dictionary_history.append((schema_result_zero,schema_result_one))
 
     # calculate the standard deviation of a schema result, based on the fitness of the individuals that match the schema.
-    def calculate_standard_deviation_of_SchemaResults(self, schema_result: SchemaResult, schema_population: list) -> float:
+    def calculate_standard_deviation_of_SchemaResults(self, schema_result: SchemaResult, schema_population: list[Individual]) -> float:
 
         total_distance = 0
 
