@@ -8,6 +8,7 @@ import pandas as pd
 
 def main():
     print("Select experiment:")
+    print("0 - Just a crossover with an individual to see how it works.")
     print("1 - Counting Ones")
     print("2 - Deceptive Trap Function (tightly linked)")
     print("3 - Non-deceptive Trap Function (tightly linked)")
@@ -15,7 +16,11 @@ def main():
     print("5 - Non-deceptive Trap Function (loosely linked)")
     print("6 - Tracing run (Counting Ones, N=200, UX)")
 
-    choice = input("Enter 1-6: ")
+    choice = input("Enter 0-6: ")
+
+    if choice == "0":
+        execute_crossover_example()
+        return
 
     if choice != "6":
         print("\nSelect crossover strategy:")
@@ -59,13 +64,17 @@ def main():
         name = "Tracing run (Counting Ones, N=200, UX)"
 
     if population_size is not None:
+        fitness_map = {
+        "1": "counting_ones",
+        "2": "trap_tight_deceptive",
+        "3": "trap_tight_nondeceptive",
+        "4": "trap_loose_deceptive",
+        "5": "trap_loose_nondeceptive",
+        }
+        fitness_strat = fitness_map.get(choice)
         results, average_results = run_optimal_population_size(
             population_size=population_size, amount_of_runs=10,
-            fitness_strat = "counting_ones"
-            if choice == "2" else "trap_tight_deceptive" 
-            if choice == "3" else "trap_tight_nondeceptive" 
-            if choice == "4" else "trap_loose_deceptive" 
-            if choice == "5" else "trap_loose_nondeceptive" ,
+            fitness_strat = fitness_strat ,
             crossover_strat="UX" if operator_choice == "1" else "2X")
         average_results.experiment_name = name
         average_results.has_reached_good_population = True
@@ -114,6 +123,9 @@ def show_results(results: list[Results], average_results: Average_results):
     print(f"\n===== {average_results.experiment_name} =====")
     print(final_df.to_string(index=False))
 
+def execute_crossover_example():
+    from experiments import run_crossover_test
+    run_crossover_test()
 
 if __name__ == "__main__":    
     main()

@@ -28,9 +28,9 @@ class Ga():
         return total_fitness
 
     # evaluate the average fitness of the population, by dividing the total fitness by the number of individuals.
-    def evaluate_average_fitness(self) -> int:
+    def evaluate_average_fitness(self) -> float:
         total_fitness = self.evaluate_total_fitness()
-        return total_fitness // len(self.population.individuals)
+        return total_fitness / len(self.population.individuals)
         
     # do selection based on family competition.
     def family_competition(self):
@@ -38,9 +38,13 @@ class Ga():
         new_pop = Population(0)
         fitness_strategy = self.fitness_strat
 
-        for i in range(0, len(shuffled_individuals), 2):
-            parent_a : Individual = shuffled_individuals[i]
-            parent_b : Individual = shuffled_individuals[i + 1]
+        i = 0
+        population_length = len(shuffled_individuals)
+
+        # Process pairs
+        while i + 1 < population_length:
+            parent_a: Individual = shuffled_individuals[i]
+            parent_b: Individual = shuffled_individuals[i + 1]
 
             child_a, child_b = self.produce_offspring(parent_a, parent_b)
 
@@ -51,21 +55,31 @@ class Ga():
                 (child_b, "child"),
             ]
 
-            # Sort by:
+            # Sort:
             # 1. Higher fitness first
             # 2. If equal fitness → child before parent
             sorted_family = sorted(
                 family,
-                key=lambda x: (x[0].fitness(fitness_strategy), 1 if x[1] == "child" else 0),
+                key=lambda x: (
+                    x[0].fitness(fitness_strategy),
+                    1 if x[1] == "child" else 0
+                ),
                 reverse=True
             )
+
             self.amount_of_fitness_evaluations += 2
 
             self.evaluate_decisions(sorted_family)
 
             winners = sorted_family[:2]
-
             new_pop.add_new_individuals([ind for ind, _ in winners])
+
+            i += 2
+
+        # If odd population last individual just survives
+        if population_length % 2 == 1:
+            leftover = shuffled_individuals[-1]
+            new_pop.add_new_individuals([leftover])
 
         self.population = new_pop
         

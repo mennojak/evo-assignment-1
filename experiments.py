@@ -69,33 +69,91 @@ def run_counting_ones(tracing, fitness_strat, crossover_strat) -> int:
         return run_find_min_population(fitness_strat=fitness_strat, crossover_strat=crossover_strat)
 
 # Goal to find the min pop needed.
-def run_find_min_population(population_size=10, max_population=1280, fitness_strat = str, crossover_strat = str) -> int:
-    has_reached_good_population = False
-    current_population = population_size
+def run_find_min_population(
+    population_size: int = 10,
+    max_population: int = 1280,
+    fitness_strat: str = "",
+    crossover_strat: str = "",
+) -> int | None:
 
-    # Do it 10 times, if the fitness in at least 9 of those 10 was good, then return population used. 
-    while not has_reached_good_population and current_population <= max_population:
-        amount_good_fitness = 0
-        for step in range(10):
-            ga = Ga(population_size=current_population, max_population=max_population, fitness_strat=fitness_strat, crossover_strat=crossover_strat)
-            ga_engine = GaEngine(ga)
-            ga_engine.execute_genetic_engine()
-            print(f"{step} ---- Just did a GA: {current_population}, reached optimum: {ga.reached_optimum()}. Average Fitness: {ga.evaluate_average_fitness()}")
-            if ga.reached_optimum():
-                amount_good_fitness += 1
-        if amount_good_fitness >= 9:
-            # TODO if it's too good, then go back between the previous population and this one, to find the exact one. 
-            has_reached_good_population = True
+    STEP_BASE = 5
+    current = population_size
+    last_bad = None
+    first_good = None
+
+    # Double search till we find a good population size, or reach the max_population limit.
+    while current <= max_population:
+        if is_population_good(current, fitness_strat, crossover_strat):
+            first_good = current
+            break
         else:
-            current_population *= 2
-            # TODO can't over the max_population
+            last_bad = current
+            current *= 2
 
-    if has_reached_good_population:
-        print(f"Found good fitness with population size {current_population}")
-    else:
-        print(f"Could not find good fitness with population size up to {max_population}")
+    if first_good is None:
+        print(f"Could not find suitable population up to {max_population}")
+        return None
 
-    return current_population if has_reached_good_population else None
+    if last_bad is None:
+        print(f"Found minimal population size: {first_good}")
+        return first_good
+
+    # Go back and forth till we find an even better population size.
+    refinement_steps = 0
+    best_found = first_good
+
+    step_size = (first_good - last_bad) // 2
+
+    step_size = max(STEP_BASE, (step_size // STEP_BASE) * STEP_BASE)
+
+    while refinement_steps < 10 and step_size >= STEP_BASE:
+
+        candidate = best_found - step_size
+
+        if candidate <= last_bad:
+            break
+
+        print(f"Refinement step {refinement_steps + 1}: trying {candidate}")
+
+        if is_population_good(candidate, fitness_strat, crossover_strat):
+            best_found = candidate
+        else:
+            last_bad = candidate
+
+        # halve step size
+        step_size //= 2
+        step_size = (step_size // STEP_BASE) * STEP_BASE
+
+        refinement_steps += 1
+
+    print(f"\nFinal minimal population size: {best_found}")
+    return best_found
+
+# Runs a test to see if a population size is good, by running 10 runs of the genetic algorithm and checking if at least 9 of them reached the optimum fitness.
+def is_population_good(pop_size: int, fitness_strat, crossover_strat) -> bool:
+    success_count = 0
+
+    for run in range(10):
+        ga = Ga(
+            population_size=pop_size,
+            max_population=pop_size,
+            fitness_strat=fitness_strat,
+            crossover_strat=crossover_strat,
+        )
+        ga_engine = GaEngine(ga)
+        ga_engine.execute_genetic_engine()
+
+        reached = ga.reached_optimum()
+        print(
+            f"[Pop {pop_size}] Run {run+1}/10 → "
+            f"Reached optimum: {reached}"
+        )
+
+        if reached:
+            success_count += 1
+
+    print(f"[Pop {pop_size}] Success rate: {success_count}/10\n")
+    return success_count >= 9
 
 # runs the optimal population size, based on the found population size of function run_find_min_population.
 def run_optimal_population_size(population_size, amount_of_runs, fitness_strat, crossover_strat) -> tuple[list[Results], Average_results]:
@@ -154,3 +212,22 @@ def calculate_standard_deviation_of_results(list_of_results: list[Results], mean
 
     mean_distance = total_distance / len(list_of_results)
     return mean_distance ** 0.5
+
+
+def run_crossover_test():
+    population_size = 10
+    genome_length = 20
+    fitness_strat = "counting_ones"
+    crossover_strat = "UX"
+
+    ga = Ga(population_size=population_size, max_population=population_size, fitness_strat=fitness_strat, crossover_strat=crossover_strat)
+    parent_a = ga.population.individuals[0]
+    parent_b = ga.population.individuals[1]
+
+    print(f"Parent A: {parent_a.genome}, Fitness: {parent_a.fitness(ga.fitness_strat)}")
+    print(f"Parent B: {parent_b.genome}, Fitness: {parent_b.fitness(ga.fitness_strat)}")
+
+    child_a, child_b = ga.produce_offspring(parent_a, parent_b)
+
+    print(f"Child A: {child_a.genome}, Fitness: {child_a.fitness(ga.fitness_strat)}")
+    print(f"Child B: {child_b.genome}, Fitness: {child_b.fitness(ga.fitness_strat)}")
