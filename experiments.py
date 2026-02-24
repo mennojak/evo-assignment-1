@@ -76,7 +76,7 @@ def run_find_min_population(
     crossover_strat: str = "",
 ) -> int | None:
 
-    STEP_BASE = 5
+    STEP_BASE = 10
     current = population_size
     last_bad = None
     first_good = None
