@@ -1,2 +1,7 @@
 # Evolutionary Computing - Practical Assignment 1 
-Run the main.py file and choose the experiment you want to try.
+This codebase is set up to run different exeriments for the first practical assignment of the evolutionary computing course.
+
+First, make sure you have the necessary libraries installed. These can be found in the `requirements.txt` file.
+
+You can try the different experiments by running the `main.py` file, which then asks you the combination of fitness function and crossover operator you want to test.
+
