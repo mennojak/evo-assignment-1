@@ -2,7 +2,7 @@ import random
 
 from models.individual import Individual
 
-# crossover operators for the genetic algorithm.
+# uniform crossover operators for the genetic algorithm.
 def uniform_crossover(parent_a : Individual, parent_b : Individual) -> Individual:
     genome_a = parent_a.genome
     genome_b = parent_b.genome
